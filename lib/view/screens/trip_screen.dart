@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../data/models/trip_points.dart';
+
 class TripMapScreen extends StatefulWidget {
-  final List<LatLng> tripPoints;
+  final List<TripPoint> tripPoints;
   const TripMapScreen({super.key,required this.tripPoints});
 
   @override
@@ -11,11 +13,16 @@ class TripMapScreen extends StatefulWidget {
 
 class _TripMapScreenState extends State<TripMapScreen> {
   late GoogleMapController _mapController;
-
+  late List<LatLng> latLngPoints;
+  @override
+  void initState() {
+    super.initState();
+    latLngPoints = widget.tripPoints.map((p) => p.toLatLng()).toList();
+  }
   @override
   Widget build(BuildContext context) {
-    final startPoint = widget.tripPoints.first;
-    final endPoint = widget.tripPoints.last;
+    final startPoint = latLngPoints.first;
+    final endPoint = latLngPoints.last;
 
     Polyline tripPolyline = displayPolyLine();
 
@@ -64,7 +71,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
       polylineId: const PolylineId("trip_route"),
       color: Colors.blue,
       width: 5,
-      points:  widget.tripPoints,
+      points:  latLngPoints,
     );
     return tripPolyline;
   }

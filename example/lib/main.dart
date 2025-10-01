@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:live_map_tracking/data/models/trip_points.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -10,14 +11,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<LatLng> tripPoints = const [
-      LatLng(30.0444, 31.2357),
-      LatLng(30.0500, 31.2400),
-      LatLng(30.0600, 31.2450),
+    final List<Map<String, dynamic>> rawPoints = [
+      {"lat": 30.55549, "lng": 31.70253},
+      {"lat": 30.55441, "lng": 31.7031},
+      {"lat": 30.55441, "lng": 31.7031},
     ];
-    return MaterialApp(
-      home: TripMapScreen(tripPoints: tripPoints,),
-
-    );
+    final tripPoints = rawPoints.map((map) => TripPoint.fromMap(map)).toList();
+    return MaterialApp(home: TripMapScreen(tripPoints: tripPoints));
   }
 }

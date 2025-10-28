@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TripMapScreen extends StatefulWidget {
-  final List<LatLng> tripPoints;
-  const TripMapScreen({super.key,required this.tripPoints});
+  final List<LatLng> actualPath;
+  final List<LatLng> userPath;
+  const TripMapScreen({super.key, required this.actualPath, required this.userPath});
 
   @override
   State<TripMapScreen> createState() => _TripMapScreenState();
@@ -14,10 +15,11 @@ class _TripMapScreenState extends State<TripMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final startPoint = widget.tripPoints.first;
-    final endPoint = widget.tripPoints.last;
+    final startPoint = widget.actualPath.first;
+    final endPoint = widget.actualPath.last;
 
     Polyline tripPolyline = displayPolyLine();
+    Polyline tripPolyline2 = displayPolyLine2();
 
     Set<Marker> markers = displayMarkers(startPoint, endPoint);
 
@@ -26,23 +28,21 @@ class _TripMapScreenState extends State<TripMapScreen> {
       body: GoogleMap(
         onMapCreated: (controller) {
           _mapController = controller;
-            _mapController.animateCamera(
-              CameraUpdate.newCameraPosition(CameraPosition(target: startPoint,zoom: 14)),
-            );
-
+          _mapController.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(target: startPoint, zoom: 14),
+            ),
+          );
         },
-        initialCameraPosition: CameraPosition(
-          target:startPoint,
-          zoom: 10,
-        ),
+        initialCameraPosition: CameraPosition(target: startPoint, zoom: 10),
         markers: markers,
-        polylines: {tripPolyline},
+        polylines: {tripPolyline,tripPolyline2},
       ),
     );
   }
 
   Set<Marker> displayMarkers(LatLng startPoint, LatLng endPoint) {
-     final Set<Marker> markers = {
+    final Set<Marker> markers = {
       Marker(
         markerId: const MarkerId("start"),
         position: startPoint,
@@ -64,7 +64,17 @@ class _TripMapScreenState extends State<TripMapScreen> {
       polylineId: const PolylineId("trip_route"),
       color: Colors.blue,
       width: 5,
-      points:  widget.tripPoints,
+      points: widget.actualPath,
+    );
+    return tripPolyline;
+  }
+
+  Polyline displayPolyLine2() {
+    final Polyline tripPolyline = Polyline(
+      polylineId: const PolylineId("trip_route2"),
+      color: Colors.red,
+      width: 5,
+      points: widget.userPath,
     );
     return tripPolyline;
   }

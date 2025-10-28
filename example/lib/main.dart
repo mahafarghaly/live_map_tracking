@@ -10,13 +10,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<LatLng> tripPoints = const [
+    final List<LatLng> actualPath = const [
       LatLng(30.0444, 31.2357),
       LatLng(30.0500, 31.2400),
       LatLng(30.0600, 31.2450),
+      LatLng(30.0600, 31.2500),
     ];
+
+    final List<LatLng> userPath = const [
+      LatLng(30.0444, 31.2357),
+      LatLng(30.0500, 31.2400),
+      LatLng(30.0600, 31.2450),
+      LatLng(30.0600, 31.2480),
+    ];
+
     return MaterialApp(
-      home: TripMapScreen(tripPoints: tripPoints,),
+      home: TripMapScreen(actualPath: actualPath,userPath: userPath,),
 
     );
   }

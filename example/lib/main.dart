@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       {"lat": 30.55441, "lng": 31.7031},
       {"lat": 30.55441, "lng": 31.7031},
     ];
-    final tripPoints = rawPoints.map((map) => TripPoint.fromMap(map)).toList();
+    final tripPoints = rawPoints.map((map) => GeoPoint.fromMap(map)).toList();
     return MaterialApp(home: TripMapScreen(tripPoints: tripPoints));
   }
 }

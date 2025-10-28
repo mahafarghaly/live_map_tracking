@@ -1,14 +1,14 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-class TripPoint {
+class GeoPoint {
   final double lat;
   final double lng;
 
-  TripPoint({required this.lat, required this.lng});
+  GeoPoint({required this.lat, required this.lng});
 
   LatLng toLatLng() => LatLng(lat, lng);
 
-  factory TripPoint.fromMap(Map<String, dynamic> map) {
-    return TripPoint(
+  factory GeoPoint.fromMap(Map<String, dynamic> map) {
+    return GeoPoint(
       lat: (map['lat'] as num).toDouble(),
       lng: (map['lng'] as num).toDouble(),
     );

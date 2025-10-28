@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../data/models/trip_points.dart';
 
 class TripMapScreen extends StatefulWidget {
-  final List<TripPoint> tripPoints;
+  final List<GeoPoint> tripPoints;
   const TripMapScreen({super.key,required this.tripPoints});
 
   @override

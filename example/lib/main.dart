@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:live_map_tracking/data/models/trip_points.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -17,6 +17,12 @@ class MyApp extends StatelessWidget {
       {"lat": 30.55441, "lng": 31.7031},
     ];
     final tripPoints = rawPoints.map((map) => GeoPoint.fromMap(map)).toList();
-    return MaterialApp(home: TripMapScreen(tripPoints: tripPoints));
+    return MaterialApp(
+      home: StaticRoute(
+        directionList: tripPoints,
+        statIcon: "packages/live_map_tracking/assets/images/marker_green.png",
+        endIcon: "packages/live_map_tracking/assets/images/marker.png",
+      ),
+    );
   }
 }

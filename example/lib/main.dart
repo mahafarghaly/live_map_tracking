@@ -18,10 +18,13 @@ class MyApp extends StatelessWidget {
     ];
     final tripPoints = rawPoints.map((map) => GeoPoint.fromMap(map)).toList();
     return MaterialApp(
-      home: StaticRoute(
-        directionList: tripPoints,
-        statIcon: "packages/live_map_tracking/assets/images/marker_green.png",
-        endIcon: "packages/live_map_tracking/assets/images/marker.png",
+      home: Scaffold(
+        appBar: AppBar(title: Text("App Name"),),
+        body: StaticRoute(
+          directionList: tripPoints,
+          statIcon: "packages/live_map_tracking/assets/images/marker_green.png",
+          endIcon: "packages/live_map_tracking/assets/images/marker.png",
+        ),
       ),
     );
   }

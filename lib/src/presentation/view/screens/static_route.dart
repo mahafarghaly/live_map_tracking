@@ -81,49 +81,46 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
     final startPoint = latLngPoints.first;
     Polyline tripPolyline = displayPolyLine();
     final markerState = ref.watch(markerStateProvider);
-    return Scaffold(
-      appBar: AppBar(title: Text("Trip Route")),
-      body: Stack(
-        children: [
-          GoogleMap(
-            onMapCreated: (controller) {
-              _mapController = controller;
-              _mapController.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(target: startPoint, zoom: 14),
-                ),
-              );
-            },
-            onTap: (_) => ref.read(markerStateProvider.notifier).clearSelection(),
-            initialCameraPosition: CameraPosition(target: startPoint, zoom: 10),
-            markers: markerState.markers,
-            polylines: {tripPolyline},
-          ),
-          if (markerState.selectedMarker != null &&
-              markerState.selectedPosition != null)
-            CustomInfoWindow(
-              position: markerState.selectedPosition!,
-              mapController: _mapController,
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "Marker: ${markerState.selectedMarker!.markerId.value}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
+    return Stack(
+      children: [
+        GoogleMap(
+          onMapCreated: (controller) {
+            _mapController = controller;
+            _mapController.animateCamera(
+              CameraUpdate.newCameraPosition(
+                CameraPosition(target: startPoint, zoom: 14),
+              ),
+            );
+          },
+          onTap: (_) => ref.read(markerStateProvider.notifier).clearSelection(),
+          initialCameraPosition: CameraPosition(target: startPoint, zoom: 10),
+          markers: markerState.markers,
+          polylines: {tripPolyline},
+        ),
+        if (markerState.selectedMarker != null &&
+            markerState.selectedPosition != null)
+          CustomInfoWindow(
+            position: markerState.selectedPosition!,
+            mapController: _mapController,
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "Marker: ${markerState.selectedMarker!.markerId.value}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
                       ),
                     ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 

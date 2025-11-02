@@ -81,9 +81,7 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
     final startPoint = latLngPoints.first;
     Polyline tripPolyline = displayPolyLine();
     final markerState = ref.watch(markerStateProvider);
-    return Scaffold(
-      appBar: AppBar(title: Text("Trip Route")),
-      body: Stack(
+    return  Stack(
         children: [
           GoogleMap(
             onMapCreated: (controller) {
@@ -123,7 +121,6 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
               ),
             ),
         ],
-      ),
     );
   }
 

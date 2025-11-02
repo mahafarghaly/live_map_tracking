@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:live_map_tracking/live_map_tracking.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:live_map_tracking_example/home_screen.dart';
 void main() {
   runApp(ProviderScope(child: const MyApp()));
 }
@@ -11,18 +10,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> rawPoints = [
-      {"lat": 30.55549, "lng": 31.70253},
-      {"lat": 30.55441, "lng": 31.7031},
-      {"lat": 30.55441, "lng": 31.7031},
-    ];
-    final tripPoints = rawPoints.map((map) => GeoPoint.fromMap(map)).toList();
     return MaterialApp(
-      home: StaticRoute(
-        directionList: tripPoints,
-        statIcon: "packages/live_map_tracking/assets/images/marker_green.png",
-        endIcon: "packages/live_map_tracking/assets/images/marker.png",
-      ),
+     home: HomeScreen(),
     );
   }
-}
+
+ }

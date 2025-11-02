@@ -5,11 +5,11 @@ import 'package:live_map_tracking/src/data/models/geo_points.dart';
 
 import 'live_map_tracking.dart';
 
-export 'src/presentation/view/screens/static_route.dart';
+export 'src/presentation/view/widgets/static_route.dart';
 export 'src/data/models/geo_points.dart';
 export 'src/presentation/controllers/marker_controller.dart';
 export 'src/presentation/view/widgets/custom_info_window.dart';
-
+export 'src/presentation/view/widgets/live_tracking.dart';
 class LiveMapTracking {
   static Future<Marker> displayMarker({
     required String markerId,

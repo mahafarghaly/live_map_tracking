@@ -112,6 +112,38 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
+    return  Stack(
+        children: [
+          GoogleMap(
+            onMapCreated: (controller) {
+              _mapController = controller;
+              _mapController.animateCamera(
+                CameraUpdate.newCameraPosition(
+                  CameraPosition(target: startPoint, zoom: 14),
+                ),
+              );
+            },
+            onTap: (_) => ref.read(markerStateProvider.notifier).clearSelection(),
+            initialCameraPosition: CameraPosition(target: startPoint, zoom: 10),
+            markers: markerState.markers,
+            polylines: {tripPolyline},
+          ),
+          if (markerState.selectedMarker != null &&
+              markerState.selectedPosition != null)
+            CustomInfoWindow(
+              position: markerState.selectedPosition!,
+              mapController: _mapController,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Marker: ${markerState.selectedMarker!.markerId.value}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ),
@@ -121,6 +153,7 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
             ),
           ),
       ],
+        ],
     );
   }
 

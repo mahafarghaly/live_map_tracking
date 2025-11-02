@@ -3,15 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
 
-
 class StaticRoute extends ConsumerStatefulWidget {
   final List<GeoPoint> directionList;
   final String statIcon;
   final String endIcon;
   final Color? color;
   final int? polyLineWidth;
-final double? iconHeight;
-final double? iconWidth;
+  final double? iconHeight;
+  final double? iconWidth;
+
   const StaticRoute({
     super.key,
     required this.directionList,
@@ -36,7 +36,7 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
     super.initState();
     latLngPoints = widget.directionList.map((p) => p.toLatLng()).toList();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-     _loadMarkers();
+      _loadMarkers();
     });
   }
 
@@ -50,7 +50,7 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
         position: GeoPoint(lat: start.latitude, lng: start.longitude),
         assetIcon: widget.statIcon,
         iconWidth: widget.iconWidth,
-        iconHeight:widget.iconHeight ,
+        iconHeight: widget.iconHeight,
         onTap: () {
           notifier.selectMarker(
             Marker(markerId: const MarkerId("start"), position: start),
@@ -63,7 +63,7 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
         position: GeoPoint(lat: end.latitude, lng: end.longitude),
         assetIcon: widget.endIcon,
         iconWidth: widget.iconWidth,
-        iconHeight:widget.iconHeight ,
+        iconHeight: widget.iconHeight,
         onTap: () {
           notifier.selectMarker(
             Marker(markerId: const MarkerId("end"), position: end),
@@ -112,48 +112,14 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
-    return  Stack(
-        children: [
-          GoogleMap(
-            onMapCreated: (controller) {
-              _mapController = controller;
-              _mapController.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(target: startPoint, zoom: 14),
-                ),
-              );
-            },
-            onTap: (_) => ref.read(markerStateProvider.notifier).clearSelection(),
-            initialCameraPosition: CameraPosition(target: startPoint, zoom: 10),
-            markers: markerState.markers,
-            polylines: {tripPolyline},
-          ),
-          if (markerState.selectedMarker != null &&
-              markerState.selectedPosition != null)
-            CustomInfoWindow(
-              position: markerState.selectedPosition!,
-              mapController: _mapController,
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "Marker: ${markerState.selectedMarker!.markerId.value}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
                 ],
               ),
             ),
           ),
       ],
-        ],
     );
   }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -51,7 +50,7 @@ class HomeScreen extends StatelessWidget {
                             "packages/live_map_tracking/assets/images/marker.png",
                         movingIcon:
                             "packages/live_map_tracking/assets/images/car.png",
-                       endPoint: GeoPoint(lat: 30.55959,lng: 31.70826),
+                        endPoint: GeoPoint(lat: 30.55959, lng: 31.70826),
                       ),
                     ),
                   );
@@ -65,7 +64,14 @@ class HomeScreen extends StatelessWidget {
                   navigationTo(
                     context,
                     Scaffold(
-                      body:Scaffold(body: SearchOnMap())
+                      body: Scaffold(
+                        body: SearchOnMap(
+                          statIcon:
+                              "packages/live_map_tracking/assets/images/marker_green.png",
+                          endIcon:
+                              "packages/live_map_tracking/assets/images/marker.png", location:  GeoPoint(lat: 30.0444, lng: 31.2357),
+                        ),
+                      ),
                     ),
                   );
                 },
@@ -85,7 +91,7 @@ class HomeScreen extends StatelessWidget {
 
     for (int i = 0; i < 20; i++) {
       await Future.delayed(const Duration(seconds: 1));
-      yield GeoPoint(lat:lat + i * 0.0002,lng: lng + i * 0.0003);
+      yield GeoPoint(lat: lat + i * 0.0002, lng: lng + i * 0.0003);
     }
     //Start = LatLng(30.55549, 31.70253)
     //

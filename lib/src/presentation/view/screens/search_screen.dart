@@ -64,14 +64,14 @@ class _SearchPlacesScreenState extends ConsumerState<SearchPlacesScreen> {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                CustomSearchBar(controller: _originController,hintText: 'From (optional)',
+                CustomSearchBar(controller: _originController,hintText: 'Choose start location',
                   icon:Icons.trip_origin ,
                     onTextChange: (v) {
                       setState(() => _isOriginActive = true);
                       _onTextChange(v);
                     },),
                 const SizedBox(height: 16),
-               CustomSearchBar(controller: _destController,hintText: 'To (required)',
+               CustomSearchBar(controller: _destController,hintText: 'Choose destination',
                    icon:Icons.location_on ,onTextChange:(v) {
                    setState(() => _isOriginActive = false);
                    _onTextChange(v);

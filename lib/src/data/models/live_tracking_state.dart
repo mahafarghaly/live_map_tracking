@@ -7,13 +7,14 @@ class LiveTrackingState {
   final Marker? startMarker;
   final Marker? endMarker;
   final Marker? movingMarker;
-
+  final List<LatLng> routePolyline;
   LiveTrackingState({
     this.currentPosition,
     this.traveledPath = const [],
     this.startMarker,
     this.endMarker,
     this.movingMarker,
+    this.routePolyline = const [],
   });
 
   LiveTrackingState copyWith({
@@ -22,6 +23,7 @@ class LiveTrackingState {
     Marker? startMarker,
     Marker? endMarker,
     Marker? movingMarker,
+    List<LatLng>? routePolyline,
   }) {
     return LiveTrackingState(
       currentPosition: currentPosition ?? this.currentPosition,
@@ -29,6 +31,7 @@ class LiveTrackingState {
       startMarker: startMarker ?? this.startMarker,
       endMarker: endMarker ?? this.endMarker,
       movingMarker: movingMarker ?? this.movingMarker,
+      routePolyline: routePolyline ?? this.routePolyline,
     );
   }
 }

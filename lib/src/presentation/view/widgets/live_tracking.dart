@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
 
+import '../../../core/network/api_constants.dart';
 import '../../controllers/Lve_tracking_controller.dart';
 
 class LiveTracking extends ConsumerWidget {
@@ -39,7 +41,7 @@ class LiveTracking extends ConsumerWidget {
       ),
       onMapCreated: (controller) async {
         ref.read(liveTrackingProvider.notifier).mapController = controller;
-        ref.read(liveTrackingProvider.notifier)
+      await ref.read(liveTrackingProvider.notifier)
             .initialize(
               stream: stream,
               startIcon: startIcon,
@@ -63,12 +65,10 @@ class LiveTracking extends ConsumerWidget {
         if (state.movingMarker != null) state.movingMarker!,
       },
       polylines: {
-        if (endPoint != null &&
-            endIcon != null &&
-            state.traveledPath.isNotEmpty)
+        if (state.routePolyline.isNotEmpty)
           Polyline(
             polylineId: const PolylineId('actual_path'),
-            points: [state.traveledPath.first.toLatLng(), endPoint!.toLatLng()],
+            points: state.routePolyline,
             color: polylineColor ?? Colors.blue,
             width: polyLineWidth ?? 10,
           ),

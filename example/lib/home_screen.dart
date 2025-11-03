@@ -59,6 +59,19 @@ class HomeScreen extends StatelessWidget {
                 child: Text("Live Tracking"),
                 color: Colors.yellow,
               ),
+              SizedBox(height: 20),
+              MaterialButton(
+                onPressed: () {
+                  navigationTo(
+                    context,
+                    Scaffold(
+                      body:Scaffold(body: SearchOnMap())
+                    ),
+                  );
+                },
+                child: Text("Search on map"),
+                color: Colors.yellow,
+              ),
             ],
           ),
         ),

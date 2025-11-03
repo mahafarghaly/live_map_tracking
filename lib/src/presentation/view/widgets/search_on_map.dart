@@ -6,6 +6,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 import '../../controllers/search_controller.dart';
 import '../screens/search_screen.dart';
+
 class SearchOnMap extends ConsumerStatefulWidget {
   const SearchOnMap({super.key});
 
@@ -38,12 +39,10 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
     final polylinePoints = PolylinePoints(apiKey: ApiConstants.apiKey);
     final result = await polylinePoints.getRouteBetweenCoordinates(
       request: PolylineRequest(
-        origin:PointLatLng(origin.latitude, origin.longitude),
-        destination:    PointLatLng(destination.latitude, destination.longitude),
+        origin: PointLatLng(origin.latitude, origin.longitude),
+        destination: PointLatLng(destination.latitude, destination.longitude),
         mode: TravelMode.driving,
       ),
-
-
     );
 
     if (result.points.isNotEmpty) {
@@ -61,51 +60,57 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
           ),
         };
         _markers = {
-          Marker(markerId:  MarkerId('origin'), position: origin,
-              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen)
+          Marker(
+            markerId: MarkerId('origin'),
+            position: origin,
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueGreen,
+            ),
           ),
-          Marker(markerId: const MarkerId('destination'), position: destination),
+          Marker(
+            markerId: const MarkerId('destination'),
+            position: destination,
+          ),
         };
-     });
+      });
+      await _controller?.animateCamera(CameraUpdate.newLatLngZoom(origin, 8));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return  Stack(
-        children: [
-          GoogleMap(
-            initialCameraPosition:
-            CameraPosition(target: _myLocation, zoom: 8),
-            onMapCreated: (c) => _controller = c,
-            polylines: _polylines,
-            markers: _markers,
-          ),
-          SafeArea(
-            child: GestureDetector(
-              onTap:_onSearchTap,
-              child: Container(
-                margin: const EdgeInsets.all(16),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(color: Colors.black12, blurRadius: 4),
-                  ],
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.search),
-                    SizedBox(width: 8),
-                    Text("Search for a route..."),
-                  ],
-                ),
+    return Stack(
+      children: [
+        GoogleMap(
+          initialCameraPosition: CameraPosition(target: _myLocation, zoom: 10),
+          onMapCreated: (controller) {
+            _controller = controller;
+          },
+          polylines: _polylines,
+          markers: _markers,
+        ),
+        SafeArea(
+          child: GestureDetector(
+            onTap: _onSearchTap,
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.search),
+                  SizedBox(width: 8),
+                  Text("Search for a route..."),
+                ],
               ),
             ),
           ),
-        ],
-
+        ),
+      ],
     );
   }
 }

@@ -14,6 +14,8 @@ class CustomSearchBar extends StatelessWidget {
         hintText: hintText??"",
       leading:Icon(icon),
       onChanged:onTextChange,
+      backgroundColor: WidgetStateProperty.all(Colors.white),
+      elevation: WidgetStateProperty.all(2),
     );
   }
 }

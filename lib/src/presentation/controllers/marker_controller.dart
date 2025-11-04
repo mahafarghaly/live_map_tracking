@@ -10,8 +10,8 @@ class MarkerStateNotifier extends StateNotifier<MarkerState> {
     state = state.copyWith(markers: markers);
   }
 
-  void selectMarker(Marker marker, LatLng position) {
-    state = state.copyWith(selectedMarker: marker, selectedPosition: position);
+  void selectMarker(Marker marker) {
+    state = state.copyWith(selectedMarker: marker);
   }
 
   void clearSelection() {

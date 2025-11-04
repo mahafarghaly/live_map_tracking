@@ -28,10 +28,10 @@ class LiveTrackingNotifier extends StateNotifier<LiveTrackingState> {
 
     stream.listen((position) async {
       if (firstPosition == null) {
-        firstPosition = position.toLatLng();
+        firstPosition =  position.toLatLng();
         final startMarker = await LiveMapTracking.displayMarker(
           markerId: 'start',
-          position: GeoPoint(lat: position.lat, lng: position.lng),
+          position: GeoPoint(lat: firstPosition!.latitude, lng: firstPosition!.longitude),
           assetIcon: startIcon,
         );
 
@@ -80,7 +80,7 @@ class LiveTrackingNotifier extends StateNotifier<LiveTrackingState> {
           .map((point) => LatLng(point.latitude, point.longitude))
           .toList();
 
-      state = state.copyWith(routePolyline: route);
+      state = state.copyWith(actualPolyline: route);
     } else {
       print('Polyline error: ${result.errorMessage}');
     }

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
-
-import '../../../core/network/api_constants.dart';
 import '../../controllers/Lve_tracking_controller.dart';
 
 class LiveTracking extends ConsumerWidget {
@@ -55,7 +52,7 @@ class LiveTracking extends ConsumerWidget {
             CameraPosition(
               target: LatLng(firstPosition.lat, firstPosition.lng),
               zoom: 16,
-            ), // LatLng(30.55549,  31.70253)
+            ),
           ),
         );
       },
@@ -65,10 +62,10 @@ class LiveTracking extends ConsumerWidget {
         if (state.movingMarker != null) state.movingMarker!,
       },
       polylines: {
-        if (state.routePolyline.isNotEmpty)
+        if (state.actualPolyline.isNotEmpty)
           Polyline(
             polylineId: const PolylineId('actual_path'),
-            points: state.routePolyline,
+            points: state.actualPolyline,
             color: polylineColor ?? Colors.blue,
             width: polyLineWidth ?? 10,
           ),

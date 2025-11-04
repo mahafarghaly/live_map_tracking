@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import '../network/api_constants.dart';
 
-class DioClient {
+class DioFactory {
   final Dio _dio = Dio(
     BaseOptions(
       baseUrl: ApiConstants.baseUrl,

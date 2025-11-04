@@ -47,15 +47,15 @@ class CustomInfoWindow extends ConsumerWidget {
             borderRadius: BorderRadius.circular(10),
             child: Column(
               children: [
-                Align(
-                  alignment: AlignmentGeometry.topRight,
-                  child: IconButton(
-                    onPressed: () {
-                      ref.read(markerStateProvider.notifier).clearSelection();
-                    },
-                    icon: Icon(Icons.remove_circle, color: Colors.red),
-                  ),
-                ),
+                // Align(
+                //   alignment: AlignmentGeometry.topRight,
+                //   child: IconButton(
+                //     onPressed: () {
+                //       ref.read(markerStateProvider.notifier).clearSelection();
+                //     },
+                //     icon: Icon(Icons.remove_circle, color: Colors.red),
+                //   ),
+                // ),
                 Container(
                   height: infoHeight,
                   padding: const EdgeInsets.all(8),

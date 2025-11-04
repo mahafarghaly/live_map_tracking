@@ -12,7 +12,7 @@ final searchControllerProvider =
     );
 
 class SearchController extends StateNotifier<SearchState> {
-  final ApiDataSource _remote = ApiDataSource(DioClient());
+  final ApiDataSource _remote = ApiDataSource(DioFactory());
 
   SearchController() : super(const SearchState());
 

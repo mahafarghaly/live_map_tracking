@@ -44,34 +44,29 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
     final notifier = ref.read(markerStateProvider.notifier);
     final start = latLngPoints.first;
     final end = latLngPoints.last;
-    final markers = <Marker>{
-      await LiveMapTracking.displayMarker(
-        markerId: "start",
-        position: GeoPoint(lat: start.latitude, lng: start.longitude),
-        assetIcon: widget.statIcon,
-        iconWidth: widget.iconWidth,
-        iconHeight: widget.iconHeight,
-        onTap: () {
-          notifier.selectMarker(
-            Marker(markerId: const MarkerId("start"), position: start),
-            start,
-          );
-        },
-      ),
-      await LiveMapTracking.displayMarker(
-        markerId: "end",
-        position: GeoPoint(lat: end.latitude, lng: end.longitude),
-        assetIcon: widget.endIcon,
-        iconWidth: widget.iconWidth,
-        iconHeight: widget.iconHeight,
-        onTap: () {
-          notifier.selectMarker(
-            Marker(markerId: const MarkerId("end"), position: end),
-            end,
-          );
-        },
-      ),
-    };
+    late Marker startMarker;
+    late Marker endMarker;
+    startMarker = await LiveMapTracking.displayMarker(
+      markerId: "start",
+      position: GeoPoint(lat: start.latitude, lng: start.longitude),
+      assetIcon: widget.statIcon,
+      iconWidth: widget.iconWidth,
+      iconHeight: widget.iconHeight,
+      onTap: () {
+        notifier.selectMarker(startMarker);
+      },
+    );
+    endMarker = await LiveMapTracking.displayMarker(
+      markerId: "end",
+      position: GeoPoint(lat: end.latitude, lng: end.longitude),
+      assetIcon: widget.endIcon,
+      iconWidth: widget.iconWidth,
+      iconHeight: widget.iconHeight,
+      onTap: () {
+        notifier.selectMarker(endMarker);
+      },
+    );
+    final markers = <Marker>{startMarker, endMarker};
 
     notifier.setMarkers(markers);
   }
@@ -79,7 +74,6 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
   @override
   Widget build(BuildContext context) {
     final startPoint = latLngPoints.first;
-    Polyline tripPolyline = displayPolyLine();
     final markerState = ref.watch(markerStateProvider);
     return Stack(
       children: [
@@ -95,12 +89,11 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
           onTap: (_) => ref.read(markerStateProvider.notifier).clearSelection(),
           initialCameraPosition: CameraPosition(target: startPoint, zoom: 10),
           markers: markerState.markers,
-          polylines: {tripPolyline},
+          polylines: displayPolyLine(),
         ),
-        if (markerState.selectedMarker != null &&
-            markerState.selectedPosition != null)
+        if (markerState.selectedMarker != null)
           CustomInfoWindow(
-            position: markerState.selectedPosition!,
+            position: markerState.selectedMarker!.position,
             mapController: _mapController,
             child: Padding(
               padding: const EdgeInsets.all(4),
@@ -108,10 +101,12 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
                 children: [
                   Expanded(
                     child: Text(
-                      "Marker: ${markerState.selectedMarker!.markerId.value}",
+                      "Marker: ${markerState.selectedMarker!.markerId.value}\n"
+                      "latitude: ${markerState.selectedMarker?.position.latitude}\n"
+                      "longitude: ${markerState.selectedMarker?.position.longitude}",
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: 16,
                       ),
                     ),
                   ),
@@ -123,13 +118,13 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
     );
   }
 
-  Polyline displayPolyLine() {
+  Set<Polyline> displayPolyLine() {
     final Polyline tripPolyline = Polyline(
       polylineId: const PolylineId("trip_route"),
       color: widget.color ?? Colors.blue,
       width: widget.polyLineWidth ?? 5,
       points: latLngPoints,
     );
-    return tripPolyline;
+    return {tripPolyline};
   }
 }

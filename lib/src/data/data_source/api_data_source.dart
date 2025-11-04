@@ -3,16 +3,16 @@ import '../../core/network/dio_factory.dart';
 import '../models/places_autocomplete.dart';
 import '../models/places_details.dart';
 class ApiDataSource {
-  final DioClient dioClient;
+  final DioFactory dioFactory;
 
-  ApiDataSource(this.dioClient);
+  ApiDataSource(this.dioFactory);
 
   Future<PlaceAutocompleteResponse> searchPlaces(String input) async {
     if (input.isEmpty) {
       return  PlaceAutocompleteResponse(suggestions: []);
     }
     try {
-      final response = await dioClient.post(
+      final response = await dioFactory.post(
         ApiConstants.autocomplete,
         data: {"input": input},
       );
@@ -31,7 +31,7 @@ class ApiDataSource {
   }
 
   Future<PlaceDetailsResponse> getPlaceDetails(String placeId) async {
-    final response = await dioClient.get("${ApiConstants.placeDetails}$placeId");
+    final response = await dioFactory.get("${ApiConstants.placeDetails}$placeId");
     return PlaceDetailsResponse.fromJson(response.data);
 
   }

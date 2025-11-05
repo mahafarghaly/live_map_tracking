@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
-import 'package:live_map_tracking/src/core/utils/app_utils.dart';
+import '../../../core/utils/utils.dart' show Utils;
 import '../../controllers/Lve_tracking_controller.dart';
 
 class LiveTracking extends ConsumerWidget {

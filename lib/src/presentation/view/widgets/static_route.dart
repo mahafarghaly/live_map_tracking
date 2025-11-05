@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
 
-import '../../../core/utils/app_utils.dart';
+import '../../../core/utils/utils.dart';
 
 class StaticRoute extends ConsumerStatefulWidget {
   final List<GeoPoint> directionList;

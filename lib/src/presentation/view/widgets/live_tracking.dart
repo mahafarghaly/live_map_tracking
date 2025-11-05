@@ -37,16 +37,27 @@ class LiveTracking extends ConsumerWidget {
         zoom: 2,
       ),
       onMapCreated: (controller) async {
-        ref.read(liveTrackingProvider.notifier).mapController = controller;
-      await ref.read(liveTrackingProvider.notifier)
-            .initialize(
-              stream: stream,
-              startIcon: startIcon,
-              endIcon: endIcon,
-              endPoint: endPoint,
-              movingIcon: movingIcon,
-            );
+        final notifier = ref.read(liveTrackingProvider.notifier);
+        notifier.mapController = controller;
         final firstPosition = await stream.first;
+        if (state.movingMarker != null && state.traveledPath.isNotEmpty) {
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(firstPosition.lat, firstPosition.lng),
+                zoom: 16,
+              ),
+            ),
+          );
+          return;
+        }
+        await notifier.initialize(
+          stream: stream,
+          startIcon: startIcon,
+          endIcon: endIcon,
+          endPoint: endPoint,
+          movingIcon: movingIcon,
+        );
         controller.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(

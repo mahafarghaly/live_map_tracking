@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
 
+import '../../../core/utils/app_utils.dart';
+
 class StaticRoute extends ConsumerStatefulWidget {
   final List<GeoPoint> directionList;
   final String statIcon;
@@ -119,12 +121,9 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
   }
 
   Set<Polyline> displayPolyLine() {
-    final Polyline tripPolyline = Polyline(
-      polylineId: const PolylineId("trip_route"),
-      color: widget.color ?? Colors.blue,
-      width: widget.polyLineWidth ?? 5,
-      points: latLngPoints,
-    );
+    final Polyline tripPolyline =
+    Utils.displayPolyLine(polylineId: "trip_route", points:latLngPoints,  color:widget.color,width: widget.polyLineWidth);
     return {tripPolyline};
   }
+
 }

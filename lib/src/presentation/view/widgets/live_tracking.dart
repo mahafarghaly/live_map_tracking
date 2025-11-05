@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
+import 'package:live_map_tracking/src/core/utils/app_utils.dart';
 import '../../controllers/Lve_tracking_controller.dart';
 
 class LiveTracking extends ConsumerWidget {
@@ -41,14 +42,7 @@ class LiveTracking extends ConsumerWidget {
         notifier.mapController = controller;
         final firstPosition = await stream.first;
         if (state.movingMarker != null && state.traveledPath.isNotEmpty) {
-          controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                target: LatLng(firstPosition.lat, firstPosition.lng),
-                zoom: 16,
-              ),
-            ),
-          );
+          updateCameraPosition(controller, firstPosition);
           return;
         }
         await notifier.initialize(
@@ -58,14 +52,7 @@ class LiveTracking extends ConsumerWidget {
           endPoint: endPoint,
           movingIcon: movingIcon,
         );
-        controller.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(firstPosition.lat, firstPosition.lng),
-              zoom: 16,
-            ),
-          ),
-        );
+        updateCameraPosition(controller, firstPosition);
       },
       markers: {
         if (state.startMarker != null) state.startMarker!,
@@ -74,20 +61,22 @@ class LiveTracking extends ConsumerWidget {
       },
       polylines: {
         if (state.actualPolyline.isNotEmpty)
-          Polyline(
-            polylineId: const PolylineId('actual_path'),
-            points: state.actualPolyline,
-            color: polylineColor ?? Colors.blue,
-            width: polyLineWidth ?? 10,
-          ),
+        Utils.displayPolyLine(polylineId: 'actual_path', points: state.actualPolyline,  color: polylineColor,width: polyLineWidth),
         if (state.traveledPath.isNotEmpty)
-          Polyline(
-            polylineId: const PolylineId('live_path'),
-            points: state.traveledPath.map((geo) => geo.toLatLng()).toList(),
-            color: polylineLiveColor ?? Colors.red,
-            width: polyLineLiveWidth ?? 5,
-          ),
+        Utils.displayPolyLine(polylineId: 'live_path', points: state.traveledPath.map((geo) => geo.toLatLng()).toList(),  color: polylineLiveColor,width: polyLineLiveWidth),
       },
     );
   }
+
+  void updateCameraPosition(GoogleMapController controller, GeoPoint firstPosition) {
+          controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(firstPosition.lat, firstPosition.lng),
+          zoom: 16,
+        ),
+      ),
+    );
+  }
 }
+

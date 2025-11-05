@@ -1,5 +1,7 @@
 import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Utils {
   static Future<Uint8List> getImageFromRowData({
@@ -18,5 +20,13 @@ class Utils {
       format: ui.ImageByteFormat.png,
     );
     return imageBytData!.buffer.asUint8List();
+  }
+  static Polyline displayPolyLine({required String polylineId,required List<LatLng>points,Color? color, int? width}){
+    return Polyline(
+      polylineId:  PolylineId(polylineId),
+      points: points,
+      color: color??Colors.blue,
+      width: width ?? 5,
+    );
   }
 }

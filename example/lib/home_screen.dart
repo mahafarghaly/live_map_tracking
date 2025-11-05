@@ -51,6 +51,9 @@ class HomeScreen extends StatelessWidget {
                         movingIcon:
                             "packages/live_map_tracking/assets/images/car.png",
                         endPoint: GeoPoint(lat: 30.55959, lng: 31.70826),
+                        polylineLiveColor: Colors.red,
+                        polyLineWidth: 10,
+                        polyLineLiveWidth: 5,
                       ),
                     ),
                   );

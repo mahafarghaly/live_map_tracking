@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:live_map_tracking/src/core/utils/bitmap_helper.dart';
+import 'package:live_map_tracking/src/core/utils/app_utils.dart';
 import 'package:live_map_tracking/src/data/models/geo_points.dart';
-
 import 'live_map_tracking.dart';
-
 export 'src/presentation/view/widgets/static_route.dart';
 export 'src/data/models/geo_points.dart';
 export 'src/presentation/controllers/marker_controller.dart';
 export 'src/presentation/view/widgets/custom_info_window.dart';
 export 'src/presentation/view/widgets/live_tracking.dart';
 export 'src/presentation/view/widgets/search_on_map.dart';
+
 class LiveMapTracking {
   static Future<Marker> displayMarker({
     required String markerId,
@@ -20,8 +19,12 @@ class LiveMapTracking {
     double? iconWidth,
     double? iconHeight,
   }) async {
-    final customIcon =  BitmapDescriptor.bytes(
-      await Utils.getImageFromRowData(image: assetIcon, width: iconWidth??48, height: iconHeight??48)
+    final customIcon = BitmapDescriptor.bytes(
+      await Utils.getImageFromRowData(
+        image: assetIcon,
+        width: iconWidth ?? 48,
+        height: iconHeight ?? 48,
+      ),
     );
     final marker = Marker(
       markerId: MarkerId(markerId),

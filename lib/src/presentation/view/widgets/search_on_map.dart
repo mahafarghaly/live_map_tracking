@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
 import 'package:live_map_tracking/src/core/network/api_constants.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:live_map_tracking/src/core/utils/app_utils.dart';
 
 import '../../controllers/search_controller.dart';
 import '../screens/search_screen.dart';
@@ -62,12 +63,7 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
       final markersSet = await displayMarkers(origin, destination);
       setState(() {
         _polylines = {
-          Polyline(
-            polylineId: const PolylineId('route'),
-            points: points,
-            color: widget.color ?? Colors.blue,
-            width: widget.polyLineWidth ?? 5,
-          ),
+          Utils.displayPolyLine(polylineId: 'route', points: points,width:widget.polyLineWidth,color: widget.color)
         };
         _markers = markersSet;
       });

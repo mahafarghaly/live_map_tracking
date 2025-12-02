@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:live_map_tracking/src/presentation/controllers/search_controller.dart';
-import 'package:live_map_tracking/src/presentation/view/widgets/custom_search_bar.dart';
+import 'package:live_map_tracking/src/presentation/view/widgets/search_bar/custom_search_bar.dart';
 import '../../../data/models/places_autocomplete.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-class SearchPlacesScreen extends ConsumerStatefulWidget {
-  const SearchPlacesScreen({super.key});
+class SearchRoutesScreen extends ConsumerStatefulWidget {
+  const SearchRoutesScreen({super.key});
 
   @override
-  ConsumerState<SearchPlacesScreen> createState() => _SearchPlacesScreenState();
+  ConsumerState<SearchRoutesScreen> createState() => _SearchPlacesScreenState();
 }
 
-class _SearchPlacesScreenState extends ConsumerState<SearchPlacesScreen> {
+class _SearchPlacesScreenState extends ConsumerState<SearchRoutesScreen> {
   final _originController = TextEditingController();
   final _destController = TextEditingController();
 
@@ -22,15 +21,17 @@ class _SearchPlacesScreenState extends ConsumerState<SearchPlacesScreen> {
     if (value.isEmpty) {
       ref.read(searchControllerProvider.notifier).clearSuggestions();
     } else {
-    ref.read(searchControllerProvider.notifier).searchPlaces(value);
+      ref.read(searchControllerProvider.notifier).searchPlaces(value);
     }
   }
 
   Future<void> _onSelectSuggestion(Suggestion suggestion) async {
-    await ref.read(searchControllerProvider.notifier).selectPlace(
-      suggestion.placePrediction.placeId,
-      isOrigin: _isOriginActive,
-    );
+    await ref
+        .read(searchControllerProvider.notifier)
+        .selectPlaceRoute(
+          suggestion.placePrediction.placeId,
+          isOrigin: _isOriginActive,
+        );
 
     if (_isOriginActive) {
       _originController.text =
@@ -38,9 +39,8 @@ class _SearchPlacesScreenState extends ConsumerState<SearchPlacesScreen> {
     } else {
       _destController.text =
           suggestion.placePrediction.structuredFormat.mainText.text;
-
     }
-  ref.read(searchControllerProvider.notifier).clearSuggestions();
+    ref.read(searchControllerProvider.notifier).clearSuggestions();
 
     final state = ref.read(searchControllerProvider);
     if (state.destination != null) {
@@ -64,18 +64,26 @@ class _SearchPlacesScreenState extends ConsumerState<SearchPlacesScreen> {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                CustomSearchBar(controller: _originController,hintText: 'Choose start location',
-                  icon:Icons.trip_origin ,
-                    onTextChange: (v) {
-                      setState(() => _isOriginActive = true);
-                      _onTextChange(v);
-                    },),
+                CustomSearchBar(
+                  controller: _originController,
+                  hintText: 'Choose start location',
+                  icon: Icons.trip_origin,
+                  onTextChange: (v) {
+                    setState(() => _isOriginActive = true);
+                    _onTextChange(v);
+                  },  type: SearchBarType.classic,
+                ),
                 const SizedBox(height: 16),
-               CustomSearchBar(controller: _destController,hintText: 'Choose destination',
-                   icon:Icons.location_on ,onTextChange:(v) {
-                   setState(() => _isOriginActive = false);
-                   _onTextChange(v);
-                 },)
+                CustomSearchBar(
+                  controller: _destController,
+                  hintText: 'Choose destination',
+                  icon: Icons.location_on,
+                  onTextChange: (v) {
+                    setState(() => _isOriginActive = false);
+                    _onTextChange(v);
+                  },
+                  type: SearchBarType.classic,
+                ),
               ],
             ),
           ),
@@ -87,8 +95,9 @@ class _SearchPlacesScreenState extends ConsumerState<SearchPlacesScreen> {
                 final s = state.suggestions[index];
                 return ListTile(
                   title: Text(s.placePrediction.structuredFormat.mainText.text),
-                  subtitle:
-                  Text(s.placePrediction.structuredFormat.secondaryText.text),
+                  subtitle: Text(
+                    s.placePrediction.structuredFormat.secondaryText.text,
+                  ),
                   onTap: () => _onSelectSuggestion(s),
                 );
               },

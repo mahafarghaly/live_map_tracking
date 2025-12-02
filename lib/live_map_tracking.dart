@@ -14,22 +14,32 @@ class LiveMapTracking {
   static Future<Marker> displayMarker({
     required String markerId,
     required GeoPoint position,
-    required String assetIcon,
+     String? assetIcon,
     VoidCallback? onTap,
     double? iconWidth,
     double? iconHeight,
   }) async {
-    final customIcon = BitmapDescriptor.bytes(
-      await Utils.getImageFromRowData(
-        image: assetIcon,
-        width: iconWidth ?? 48,
-        height: iconHeight ?? 48,
-      ),
-    );
+    BitmapDescriptor icon;
+    if (assetIcon != null && assetIcon.isNotEmpty) {
+      try {
+        icon = BitmapDescriptor.bytes(
+          await Utils.getImageFromRowData(
+            image: assetIcon,
+            width: iconWidth ?? 48,
+            height: iconHeight ?? 48,
+          ),
+        );
+      } catch (e) {
+        debugPrint('Failed to load custom icon: $e');
+        icon = BitmapDescriptor.defaultMarker;
+      }
+    } else {
+      icon = BitmapDescriptor.defaultMarker;
+    }
     final marker = Marker(
       markerId: MarkerId(markerId),
       position: position.toLatLng(),
-      icon: customIcon,
+      icon: icon,
       infoWindow: InfoWindow.noText,
       onTap: onTap,
     );

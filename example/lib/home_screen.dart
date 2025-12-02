@@ -72,8 +72,16 @@ class HomeScreen extends StatelessWidget {
                           statIcon:
                               "packages/live_map_tracking/assets/images/marker_green.png",
                           endIcon:
-                              "packages/live_map_tracking/assets/images/marker.png", location:  GeoPoint(lat: 30.0444, lng: 31.2357),
+                              "packages/live_map_tracking/assets/images/marker.png",
+                          location:  GeoPoint(lat: 30.0444, lng: 31.2357),
+                          onPlaceSelected: (address, location) {
+                            print("@@Selected place: $address");
+                            print("@@LatLng: ${location.lat}, ${location.lng}");
+                          },
+                          pinIcon:"packages/live_map_tracking/assets/images/marker.png" ,
+                          enableRoute: true,
                         ),
+
                       ),
                     ),
                   );

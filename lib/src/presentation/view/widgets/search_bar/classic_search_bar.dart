@@ -19,7 +19,7 @@ class ClassicSearchBar extends StatelessWidget {
   return SearchBar(
       controller: controller,
       hintText: hintText ?? "Search...",
-      leading: Icon(icon ?? Icons.search),
+      leading: Icon(icon ?? Icons.search,color: Color(0xffA4A7AE),),
       onChanged: onTextChange,
       backgroundColor: WidgetStateProperty.all(Colors.white),
       elevation: WidgetStateProperty.all(2),

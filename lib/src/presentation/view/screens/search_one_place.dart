@@ -33,11 +33,11 @@ class _SearchPlacesScreenState extends ConsumerState<SearchOnePlaceScreen> {
                 CustomSearchBar(
                   controller: _searchController,
                   hintText: 'search a place',
-                  icon: Icons.location_on,
+                  icon: Icons.location_on_outlined,
                   onTextChange: (v) {
                     _onTextChange(v);
                   },
-                  type: SearchBarType.rounded,
+                  type: SearchBarType.classic,
                 ),
               ],
             ),

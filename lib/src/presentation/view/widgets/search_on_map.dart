@@ -75,9 +75,13 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
               ),
               child: const Row(
                 children: [
-                  Icon(Icons.search),
-                  SizedBox(width: 8),
-                  Text("Search for location"),
+                  Text("Search for location",style: TextStyle(
+                    color: Color(0xff252B37),
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                  ),),
+                  Spacer(),
+                  Icon(Icons.location_on_outlined,color: Color(0xffA4A7AE),),
                 ],
               ),
             ),

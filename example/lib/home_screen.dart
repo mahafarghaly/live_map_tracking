@@ -6,6 +6,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     final String apiKey = "AIzaSyAs8BLH_1qb-AMD63_Pf25ffSFYuGOt1Zw";
     final List<Map<String, dynamic>> rawPoints = [
       {"lat": 30.55549, "lng": 31.70253},
       {"lat": 30.55441, "lng": 31.7031},
@@ -54,6 +55,7 @@ class HomeScreen extends StatelessWidget {
                         polylineLiveColor: Colors.red,
                         polyLineWidth: 10,
                         polyLineLiveWidth: 5,
+                        apikey: apiKey,
                       ),
                     ),
                   );
@@ -80,6 +82,7 @@ class HomeScreen extends StatelessWidget {
                           },
                           pinIcon:"packages/live_map_tracking/assets/images/marker.png" ,
                           enableRoute: true,
+                          apiKey: apiKey,
                         ),
 
                       ),

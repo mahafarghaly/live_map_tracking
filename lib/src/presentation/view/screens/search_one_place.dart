@@ -6,8 +6,8 @@ import '../../controllers/search_controller.dart';
 import '../widgets/search_bar/custom_search_bar.dart';
 
 class SearchOnePlaceScreen extends ConsumerStatefulWidget {
-  const SearchOnePlaceScreen({super.key, this.onPlaceSelected});
-
+  const SearchOnePlaceScreen({ required this.apiKey,this.onPlaceSelected ,super.key});
+  final String apiKey;
   final Function(String address, GeoPoint location)? onPlaceSelected;
 
   @override
@@ -20,7 +20,7 @@ class _SearchPlacesScreenState extends ConsumerState<SearchOnePlaceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(searchControllerProvider);
+    final state = ref.watch(searchControllerProvider(widget.apiKey));
 
     return Scaffold(
       appBar: AppBar(title: const Text("Search a Place")),
@@ -65,20 +65,20 @@ class _SearchPlacesScreenState extends ConsumerState<SearchOnePlaceScreen> {
 
   void _onTextChange(String value) {
     if (value.isEmpty) {
-      ref.read(searchControllerProvider.notifier).clearSuggestions();
+      ref.read(searchControllerProvider(widget.apiKey).notifier).clearSuggestions();
     } else {
-      ref.read(searchControllerProvider.notifier).searchPlaces(value);
+      ref.read(searchControllerProvider(widget.apiKey).notifier).searchPlaces(value);
     }
   }
 
   Future<void> _onSelectSuggestion(Suggestion suggestion) async {
     final selectedPlaceAddress = await ref
-        .read(searchControllerProvider.notifier)
+        .read(searchControllerProvider(widget.apiKey).notifier)
         .getSelectedPlace(suggestion.placePrediction.placeId);
     _searchController.text =
         suggestion.placePrediction.structuredFormat.mainText.text;
-    ref.read(searchControllerProvider.notifier).clearSuggestions();
-    final state = ref.read(searchControllerProvider);
+    ref.read(searchControllerProvider(widget.apiKey).notifier).clearSuggestions();
+    final state = ref.read(searchControllerProvider(widget.apiKey));
     if (widget.onPlaceSelected != null) {
       widget.onPlaceSelected!(
         selectedPlaceAddress,

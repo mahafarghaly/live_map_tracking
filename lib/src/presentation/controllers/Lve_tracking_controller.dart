@@ -19,9 +19,11 @@ class LiveTrackingNotifier extends StateNotifier<LiveTrackingState> {
   Future<void> initialize({
     required Stream<GeoPoint> stream,
     required String startIcon,
+    required String movingIcon,
+    required String apikey,
     String? endIcon,
     GeoPoint? endPoint,
-    required String movingIcon,
+
   }) async {
     validateLiveTrackingInputs(endIcon: endIcon, endPoint: endPoint);
     LatLng? firstPosition;
@@ -43,6 +45,7 @@ class LiveTrackingNotifier extends StateNotifier<LiveTrackingState> {
             assetIcon: endIcon,
           );
           await drawRoutePolyline(
+            apikey,
             LatLng(position.lat, position.lng),
             LatLng(endPoint.lat, endPoint.lng),
           );
@@ -65,8 +68,8 @@ class LiveTrackingNotifier extends StateNotifier<LiveTrackingState> {
     });
   }
 
-  Future<void> drawRoutePolyline(LatLng start, LatLng end) async {
-    PolylinePoints polylinePoints = PolylinePoints(apiKey: ApiConstants.apiKey);
+  Future<void> drawRoutePolyline(String apikey,LatLng start, LatLng end) async {
+    PolylinePoints polylinePoints = PolylinePoints(apiKey: apikey);
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       request: PolylineRequest(
         origin: PointLatLng(start.latitude, start.longitude),

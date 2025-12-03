@@ -15,8 +15,10 @@ class LiveTracking extends ConsumerWidget {
   final Color? polylineLiveColor;
   final int? polyLineWidth;
   final int? polyLineLiveWidth;
+  final  String apikey;
 
   const LiveTracking({
+  required this.apikey,
     required this.stream,
     required this.startIcon,
     required this.movingIcon,
@@ -51,6 +53,7 @@ class LiveTracking extends ConsumerWidget {
           endIcon: endIcon,
           endPoint: endPoint,
           movingIcon: movingIcon,
+          apikey: apikey,
         );
         updateCameraPosition(controller, firstPosition);
       },

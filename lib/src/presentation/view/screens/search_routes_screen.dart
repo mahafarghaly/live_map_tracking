@@ -5,8 +5,8 @@ import '../../../data/models/places_autocomplete.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SearchRoutesScreen extends ConsumerStatefulWidget {
-  const SearchRoutesScreen({super.key});
-
+  const SearchRoutesScreen({super.key, required this.apiKey});
+final String apiKey;
   @override
   ConsumerState<SearchRoutesScreen> createState() => _SearchPlacesScreenState();
 }
@@ -19,15 +19,15 @@ class _SearchPlacesScreenState extends ConsumerState<SearchRoutesScreen> {
 
   void _onTextChange(String value) {
     if (value.isEmpty) {
-      ref.read(searchControllerProvider.notifier).clearSuggestions();
+      ref.read(searchControllerProvider(widget.apiKey).notifier).clearSuggestions();
     } else {
-      ref.read(searchControllerProvider.notifier).searchPlaces(value);
+      ref.read(searchControllerProvider(widget.apiKey).notifier).searchPlaces(value);
     }
   }
 
   Future<void> _onSelectSuggestion(Suggestion suggestion) async {
     await ref
-        .read(searchControllerProvider.notifier)
+        .read(searchControllerProvider(widget.apiKey).notifier)
         .selectPlaceRoute(
           suggestion.placePrediction.placeId,
           isOrigin: _isOriginActive,
@@ -40,21 +40,21 @@ class _SearchPlacesScreenState extends ConsumerState<SearchRoutesScreen> {
       _destController.text =
           suggestion.placePrediction.structuredFormat.mainText.text;
     }
-    ref.read(searchControllerProvider.notifier).clearSuggestions();
+    ref.read(searchControllerProvider(widget.apiKey).notifier).clearSuggestions();
 
-    final state = ref.read(searchControllerProvider);
+    final state = ref.read(searchControllerProvider(widget.apiKey));
     if (state.destination != null) {
       Navigator.pop(context, {
         'origin': state.origin,
         'destination': state.destination,
       });
-      ref.read(searchControllerProvider.notifier).reset();
+      ref.read(searchControllerProvider(widget.apiKey).notifier).reset();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(searchControllerProvider);
+    final state = ref.watch(searchControllerProvider(widget.apiKey));
 
     return Scaffold(
       appBar: AppBar(title: const Text("Search Route")),

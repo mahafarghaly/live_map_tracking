@@ -9,6 +9,7 @@ import '../../controllers/search_controller.dart';
 import '../screens/search_routes_screen.dart';
 
 class SearchOnMap extends ConsumerStatefulWidget {
+  final String apiKey;
   final GeoPoint location;
   final String? statIcon;
   final String? endIcon;
@@ -22,6 +23,7 @@ class SearchOnMap extends ConsumerStatefulWidget {
 
   const SearchOnMap({
     super.key,
+    required this.apiKey,
     required this.location,
     this.statIcon,
     this.endIcon,
@@ -29,7 +31,9 @@ class SearchOnMap extends ConsumerStatefulWidget {
     this.polyLineWidth,
     this.iconHeight,
     this.iconWidth,
-    this.onPlaceSelected, this.enableRoute, this.pinIcon
+    this.onPlaceSelected,
+    this.enableRoute,
+    this.pinIcon,
   });
 
   @override
@@ -79,42 +83,43 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
             ),
           ),
         ),
-     if(widget.enableRoute==true)
-     Positioned(
-          right: 14,
-          bottom: 40,
-          child: FloatingActionButton(
-            backgroundColor: Colors.teal,
-            onPressed: _onRouteTap,
-            child: Icon(Icons.directions, color: Colors.white, size: 30),
+        if (widget.enableRoute == true)
+          Positioned(
+            right: 14,
+            bottom: 40,
+            child: FloatingActionButton(
+              backgroundColor: Colors.teal,
+              onPressed: _onRouteTap,
+              child: Icon(Icons.directions, color: Colors.white, size: 30),
+            ),
           ),
-        ),
       ],
     );
   }
 
   Future<void> _onRouteTap() async {
-    ref.read(searchControllerProvider.notifier).reset();
+    ref.read(searchControllerProvider(widget.apiKey).notifier).reset();
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const SearchRoutesScreen()),
+      MaterialPageRoute(builder: (_) =>  SearchRoutesScreen(apiKey:widget.apiKey,)),
     );
 
     if (result is Map) {
       final origin = result['origin'] as LatLng? ?? widget.location.toLatLng();
       final destination = result['destination'] as LatLng;
 
-      await _drawRoute(origin, destination);
+      await _drawRoute(widget.apiKey,origin, destination);
     }
   }
 
   Future<void> _onSearchTap() async {
-    ref.read(searchControllerProvider.notifier).reset();
+    ref.read(searchControllerProvider(widget.apiKey).notifier).reset();
 
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => SearchOnePlaceScreen(
+          apiKey: widget.apiKey,
           onPlaceSelected: (address, location) async {
             final originMarker = await LiveMapTracking.displayMarker(
               markerId: 'place',
@@ -142,10 +147,10 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
     );
   }
 
-  Future<void> _drawRoute(LatLng origin, LatLng destination) async {
+  Future<void> _drawRoute(String apiKey,LatLng origin, LatLng destination) async {
     final result = await ref
-        .read(searchControllerProvider.notifier)
-        .drawRoutePolyline(origin, destination);
+        .read(searchControllerProvider(widget.apiKey).notifier)
+        .drawRoutePolyline(apiKey,origin, destination);
     if (result.isNotEmpty) {
       final points = result
           .map((p) => LatLng(p.latitude, p.longitude))

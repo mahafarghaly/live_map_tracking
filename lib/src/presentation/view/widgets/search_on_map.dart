@@ -10,7 +10,8 @@ import '../screens/search_routes_screen.dart';
 
 class SearchOnMap extends ConsumerStatefulWidget {
   final String apiKey;
-  final GeoPoint location;
+  final GeoPoint currentLocation;
+  final GeoPoint initialCameraPosition;
   final String? statIcon;
   final String? endIcon;
   final String? pinIcon;
@@ -24,7 +25,7 @@ class SearchOnMap extends ConsumerStatefulWidget {
   const SearchOnMap({
     super.key,
     required this.apiKey,
-    required this.location,
+    required this.currentLocation,
     this.statIcon,
     this.endIcon,
     this.color,
@@ -33,7 +34,7 @@ class SearchOnMap extends ConsumerStatefulWidget {
     this.iconWidth,
     this.onPlaceSelected,
     this.enableRoute,
-    this.pinIcon,
+    this.pinIcon, required this.initialCameraPosition,
   });
 
   @override
@@ -44,20 +45,51 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
   GoogleMapController? _controller;
   Set<Polyline> _polylines = {};
   Set<Marker> _markers = {};
+  @override
+  void initState() {
+    super.initState();
+    _setInitialMarker();
+  }
+
+  Future<void> _setInitialMarker() async {
+    final initialMarker = await LiveMapTracking.displayMarker(
+      markerId: 'initial',
+      position: widget.currentLocation,
+      assetIcon: widget.pinIcon,
+      iconHeight: widget.iconHeight,
+      iconWidth: widget.iconWidth,
+    );
+    if (!mounted) return;
+    if(widget.currentLocation.lat!=0||widget.currentLocation.lng!=0){
+      setState(() {
+        _markers = {initialMarker};
+      });
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
+    final isLocation= widget.currentLocation.lat!=0.0&&widget.currentLocation.lng!=0.0;
     return Stack(
       children: [
         GoogleMap(
           zoomControlsEnabled: false,
           myLocationButtonEnabled: false,
-          initialCameraPosition: CameraPosition(
-            target: widget.location.toLatLng(),
+          initialCameraPosition: isLocation? CameraPosition(
+            target: widget.currentLocation.toLatLng(),
             zoom: 10,
+          ):CameraPosition(
+            target:widget.initialCameraPosition.toLatLng(),// LatLng( 39.8283, -98.5795,),
+            zoom: 4,
           ),
-          onMapCreated: (controller) {
+          onMapCreated: (controller) async{
             _controller = controller;
+            if(isLocation) {
+              await _controller!.animateCamera(
+            CameraUpdate.newLatLngZoom(widget.currentLocation.toLatLng(), 10),
+            );
+            }
           },
           polylines: _polylines,
           markers: _markers,
@@ -109,7 +141,7 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
     );
 
     if (result is Map) {
-      final origin = result['origin'] as LatLng? ?? widget.location.toLatLng();
+      final origin = result['origin'] as LatLng? ?? widget.currentLocation.toLatLng();
       final destination = result['destination'] as LatLng;
 
       await _drawRoute(widget.apiKey,origin, destination);

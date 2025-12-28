@@ -82,11 +82,7 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
         GoogleMap(
           onMapCreated: (controller) {
             _mapController = controller;
-            _mapController.animateCamera(
-              CameraUpdate.newCameraPosition(
-                CameraPosition(target: startPoint, zoom: 14),
-              ),
-            );
+            _mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: startPoint, zoom: 14)));
           },
           onTap: (_) => ref.read(markerStateProvider.notifier).clearSelection(),
           initialCameraPosition: CameraPosition(target: startPoint, zoom: 10),
@@ -106,10 +102,7 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
                       "Marker: ${markerState.selectedMarker!.markerId.value}\n"
                       "latitude: ${markerState.selectedMarker?.position.latitude}\n"
                       "longitude: ${markerState.selectedMarker?.position.longitude}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
                 ],
@@ -121,9 +114,12 @@ class _StaticRouteState extends ConsumerState<StaticRoute> {
   }
 
   Set<Polyline> displayPolyLine() {
-    final Polyline tripPolyline =
-    Utils.displayPolyLine(polylineId: "trip_route", points:latLngPoints,  color:widget.color,width: widget.polyLineWidth);
+    final Polyline tripPolyline = Utils.displayPolyLine(
+      polylineId: "trip_route",
+      points: latLngPoints,
+      color: widget.color,
+      width: widget.polyLineWidth,
+    );
     return {tripPolyline};
   }
-
 }

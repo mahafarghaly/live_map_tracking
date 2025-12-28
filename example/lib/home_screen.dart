@@ -51,7 +51,7 @@ class HomeScreen extends StatelessWidget {
                             "packages/live_map_tracking/assets/images/marker.png",
                         movingIcon:
                             "packages/live_map_tracking/assets/images/car.png",
-                        endPoint: GeoPoint(lat: 30.55959, lng: 31.70826),
+                        endPoint: GeoPoint(lat: 30.55959, lng: 31.70826),//31.216021733655023, 29.940172853316405
                         polylineLiveColor: Colors.red,
                         polyLineWidth: 10,
                         polyLineLiveWidth: 5,
@@ -75,14 +75,14 @@ class HomeScreen extends StatelessWidget {
                               "packages/live_map_tracking/assets/images/marker_green.png",
                           endIcon:
                               "packages/live_map_tracking/assets/images/marker.png",
-                          location:  GeoPoint(lat: 30.0444, lng: 31.2357),
+                          currentLocation:  GeoPoint(lat: 30.0444, lng: 31.2357),
                           onPlaceSelected: (address, location) {
                             print("@@Selected place: $address");
                             print("@@LatLng: ${location.lat}, ${location.lng}");
                           },
                           pinIcon:"packages/live_map_tracking/assets/images/marker.png" ,
                           enableRoute: true,
-                          apiKey: apiKey,
+                          apiKey: apiKey, initialCameraPosition: GeoPoint(lat: 39.8283, lng:  -98.5795),
                         ),
 
                       ),

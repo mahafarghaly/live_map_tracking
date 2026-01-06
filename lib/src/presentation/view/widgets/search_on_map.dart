@@ -20,6 +20,7 @@ class SearchOnMap extends ConsumerStatefulWidget {
   final double? iconHeight;
   final double? iconWidth;
   final bool? enableRoute;
+  final Widget? searchBarChild;
   final Function(String address, GeoPoint location)? onPlaceSelected;
 
   const SearchOnMap({
@@ -34,7 +35,7 @@ class SearchOnMap extends ConsumerStatefulWidget {
     this.iconWidth,
     this.onPlaceSelected,
     this.enableRoute,
-    this.pinIcon, required this.initialCameraPosition,
+    this.pinIcon, required this.initialCameraPosition, this.searchBarChild
   });
 
   @override
@@ -105,15 +106,15 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
               ),
-              child: const Row(
+              child:  widget.searchBarChild??Row(
                 children: [
-                  Text("Search for location",style: TextStyle(
+                 Text("Search for location",style: TextStyle(
                     color: Color(0xff252B37),
                     fontWeight: FontWeight.w400,
                     fontSize: 14,
                   ),),
                   Spacer(),
-                  Icon(Icons.location_on_outlined,color: Color(0xffA4A7AE),),
+                Icon(Icons.location_on_outlined,color: Color(0xffA4A7AE),),
                 ],
               ),
             ),

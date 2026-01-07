@@ -6,7 +6,7 @@ import 'package:live_map_tracking/src/core/utils/utils.dart';
 import 'package:live_map_tracking/src/presentation/view/screens/search_one_place.dart';
 
 import '../../controllers/search_controller.dart';
-import '../screens/search_routes_screen.dart';
+import 'search_routes_screen.dart';
 
 class SearchOnMap extends ConsumerStatefulWidget {
   final String apiKey;
@@ -20,7 +20,11 @@ class SearchOnMap extends ConsumerStatefulWidget {
   final double? iconHeight;
   final double? iconWidth;
   final bool? enableRoute;
-  final Widget? searchBarChild;
+  final String? hintText;
+  final Widget? prefixSearchIcon;
+  final Widget? suffixSearchIcon;
+  final TextStyle? hintStyle;
+  final TextStyle? textStyle;
   final Function(String address, GeoPoint location)? onPlaceSelected;
 
   const SearchOnMap({
@@ -35,7 +39,7 @@ class SearchOnMap extends ConsumerStatefulWidget {
     this.iconWidth,
     this.onPlaceSelected,
     this.enableRoute,
-    this.pinIcon, required this.initialCameraPosition, this.searchBarChild
+    this.pinIcon, required this.initialCameraPosition, this.hintText, this.prefixSearchIcon, this.suffixSearchIcon, this.hintStyle, this.textStyle,
   });
 
   @override
@@ -103,18 +107,22 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: const Color(0xffD5D7DA)
+                ),
                 boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
               ),
-              child:  widget.searchBarChild??Row(
+              child: Row(
                 children: [
-                 Text("Search for location",style: TextStyle(
+                 Text(widget.hintText??"Search for location",style:widget.textStyle?? TextStyle(
                     color: Color(0xff252B37),
                     fontWeight: FontWeight.w400,
                     fontSize: 14,
                   ),),
                   Spacer(),
-                Icon(Icons.location_on_outlined,color: Color(0xffA4A7AE),),
+                if(widget.suffixSearchIcon!=null)
+                widget.suffixSearchIcon!
                 ],
               ),
             ),
@@ -156,6 +164,11 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
       context,
       MaterialPageRoute(
         builder: (_) => SearchOnePlaceScreen(
+       hintText: widget.hintText,
+          hintStyle: widget.hintStyle,
+          prefixSearchIcon: widget.prefixSearchIcon,
+          suffixSearchIcons: widget.suffixSearchIcon,
+          textStyle: widget.textStyle,
           apiKey: widget.apiKey,
           onPlaceSelected: (address, location) async {
             final originMarker = await LiveMapTracking.displayMarker(

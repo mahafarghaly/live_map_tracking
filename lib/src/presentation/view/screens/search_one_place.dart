@@ -6,7 +6,12 @@ import '../../controllers/search_controller.dart';
 import '../widgets/search_bar/custom_search_bar.dart';
 
 class SearchOnePlaceScreen extends ConsumerStatefulWidget {
-  const SearchOnePlaceScreen({ required this.apiKey,this.onPlaceSelected ,super.key});
+  const SearchOnePlaceScreen({ required this.apiKey,this.onPlaceSelected ,super.key, this.hintText, this.prefixSearchIcon, this.suffixSearchIcons, this.hintStyle, this.textStyle});
+  final String? hintText;
+  final Widget? prefixSearchIcon;
+  final Widget? suffixSearchIcons;
+  final TextStyle? hintStyle;
+  final TextStyle? textStyle;
   final String apiKey;
   final Function(String address, GeoPoint location)? onPlaceSelected;
 
@@ -32,8 +37,11 @@ class _SearchPlacesScreenState extends ConsumerState<SearchOnePlaceScreen> {
               children: [
                 CustomSearchBar(
                   controller: _searchController,
-                  hintText: 'search a place',
-                  icon: Icons.location_on_outlined,
+                  hintText:widget.hintText,
+                  leadingIcon: widget.prefixSearchIcon,
+                  trailingIcons:[?widget.suffixSearchIcons],
+                  hintStyle: widget.hintStyle,
+                  textStyle: widget.textStyle,
                   onTextChange: (v) {
                     _onTextChange(v);
                   },

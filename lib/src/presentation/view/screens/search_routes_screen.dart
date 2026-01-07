@@ -5,7 +5,12 @@ import '../../../data/models/places_autocomplete.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SearchRoutesScreen extends ConsumerStatefulWidget {
-  const SearchRoutesScreen({super.key, required this.apiKey});
+  const SearchRoutesScreen({super.key, required this.apiKey, this.prefixSearchIcon, this.suffixSearchIcons, this.hintStyle, this.textStyle, this.hintText});
+  final String? hintText;
+  final Widget? prefixSearchIcon;
+  final List<Widget>? suffixSearchIcons;
+  final TextStyle? hintStyle;
+  final TextStyle? textStyle;
 final String apiKey;
   @override
   ConsumerState<SearchRoutesScreen> createState() => _SearchPlacesScreenState();
@@ -66,8 +71,11 @@ class _SearchPlacesScreenState extends ConsumerState<SearchRoutesScreen> {
               children: [
                 CustomSearchBar(
                   controller: _originController,
-                  hintText: 'Choose start location',
-                  icon: Icons.trip_origin,
+                  hintText:widget.hintText,
+                  leadingIcon: widget.prefixSearchIcon,
+                  trailingIcons:widget.suffixSearchIcons,
+                  hintStyle: widget.hintStyle,
+                  textStyle: widget.textStyle,
                   onTextChange: (v) {
                     setState(() => _isOriginActive = true);
                     _onTextChange(v);
@@ -76,8 +84,11 @@ class _SearchPlacesScreenState extends ConsumerState<SearchRoutesScreen> {
                 const SizedBox(height: 16),
                 CustomSearchBar(
                   controller: _destController,
-                  hintText: 'Choose destination',
-                  icon: Icons.location_on,
+                  hintText:widget.hintText,
+                  leadingIcon: widget.prefixSearchIcon,
+                  trailingIcons:widget.suffixSearchIcons,
+                  hintStyle: widget.hintStyle,
+                  textStyle: widget.textStyle,
                   onTextChange: (v) {
                     setState(() => _isOriginActive = false);
                     _onTextChange(v);

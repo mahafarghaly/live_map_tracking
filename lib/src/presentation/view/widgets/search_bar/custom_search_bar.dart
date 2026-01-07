@@ -7,7 +7,10 @@ enum SearchBarType { classic, rounded }
 class CustomSearchBar extends StatelessWidget {
   final TextEditingController controller;
   final String? hintText;
-  final IconData? icon;
+  final Widget? leadingIcon;
+  final List<Widget>? trailingIcons;
+  final TextStyle? hintStyle;
+  final TextStyle? textStyle;
   final Function(String)? onTextChange;
   final SearchBarType type;
 
@@ -15,9 +18,8 @@ class CustomSearchBar extends StatelessWidget {
     super.key,
     required this.controller,
     this.hintText,
-    this.icon,
     this.onTextChange,
-    required this.type,
+    required this.type, this.leadingIcon, this.trailingIcons, this.hintStyle, this.textStyle,
   });
 
   @override
@@ -27,14 +29,18 @@ class CustomSearchBar extends StatelessWidget {
         return ClassicSearchBar(
           controller: controller,
           hintText: hintText,
-          icon: icon,
+          leadingIcon: leadingIcon,
+          trailingIcons: trailingIcons,
           onTextChange: onTextChange,
         );
       case SearchBarType.rounded:
         return RoundedSearchBar(
           controller: controller,
           hintText: hintText,
-          icon: icon,
+          textStyle: textStyle,
+          hintStyle: hintStyle,
+          leadingIcon: leadingIcon,
+          trailingIcons: trailingIcons,
           onTextChange: onTextChange,
         );
     }

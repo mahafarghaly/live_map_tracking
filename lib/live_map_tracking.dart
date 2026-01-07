@@ -8,7 +8,7 @@ export 'src/data/models/geo_points.dart';
 export 'src/presentation/controllers/marker_controller.dart';
 export 'src/presentation/view/widgets/custom_info_window.dart';
 export 'src/presentation/view/widgets/live_tracking.dart';
-export 'src/presentation/view/widgets/search_on_map.dart';
+export 'src/presentation/view/screens/search_on_map.dart';
 
 class LiveMapTracking {
   static Future<Marker> displayMarker({

@@ -108,7 +108,7 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
               await _controller!.animateCamera(
                 CameraUpdate.newLatLngZoom(
                   widget.currentLocation.toLatLng(),
-                  10,
+                  12,
                 ),
               );
             }
@@ -207,7 +207,7 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
             });
 
             await _controller?.animateCamera(
-              CameraUpdate.newLatLngZoom(location.toLatLng(), 8),
+              CameraUpdate.newLatLngZoom(location.toLatLng(), 12),
             );
 
             if (widget.onPlaceSelected != null) {

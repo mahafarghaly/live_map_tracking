@@ -39,7 +39,13 @@ class SearchOnMap extends ConsumerStatefulWidget {
     this.iconWidth,
     this.onPlaceSelected,
     this.enableRoute,
-    this.pinIcon, required this.initialCameraPosition, this.hintText, this.prefixSearchIcon, this.suffixSearchIcon, this.hintStyle, this.textStyle,
+    this.pinIcon,
+    required this.initialCameraPosition,
+    this.hintText,
+    this.prefixSearchIcon,
+    this.suffixSearchIcon,
+    this.hintStyle,
+    this.textStyle,
   });
 
   @override
@@ -50,9 +56,11 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
   GoogleMapController? _controller;
   Set<Polyline> _polylines = {};
   Set<Marker> _markers = {};
+  String mapStyle = "";
   @override
   void initState() {
     super.initState();
+    _loadMapStyle();
     _setInitialMarker();
   }
 
@@ -65,35 +73,44 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
       iconWidth: widget.iconWidth,
     );
     if (!mounted) return;
-    if(widget.currentLocation.lat!=0||widget.currentLocation.lng!=0){
+    if (widget.currentLocation.lat != 0 || widget.currentLocation.lng != 0) {
       setState(() {
         _markers = {initialMarker};
       });
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLocation= widget.currentLocation.lat!=0.0&&widget.currentLocation.lng!=0.0;
+    final isLocation =
+        widget.currentLocation.lat != 0.0 && widget.currentLocation.lng != 0.0;
     return Stack(
       children: [
         GoogleMap(
           zoomControlsEnabled: false,
           myLocationButtonEnabled: false,
-          initialCameraPosition: isLocation? CameraPosition(
-            target: widget.currentLocation.toLatLng(),
-            zoom: 10,
-          ):CameraPosition(
-            target:widget.initialCameraPosition.toLatLng(),// LatLng( 39.8283, -98.5795,),
-            zoom: 4,
-          ),
-          onMapCreated: (controller) async{
+          initialCameraPosition: isLocation
+              ? CameraPosition(
+                  target: widget.currentLocation.toLatLng(),
+                  zoom: 10,
+                )
+              : CameraPosition(
+                  target: widget.initialCameraPosition
+                      .toLatLng(), // LatLng( 39.8283, -98.5795,),
+                  zoom: 4,
+                ),
+          onMapCreated: (controller) async {
             _controller = controller;
-            if(isLocation) {
+            if (mapStyle.isNotEmpty) {
+              await _controller!.setMapStyle(mapStyle);
+            }
+            if (isLocation) {
               await _controller!.animateCamera(
-            CameraUpdate.newLatLngZoom(widget.currentLocation.toLatLng(), 10),
-            );
+                CameraUpdate.newLatLngZoom(
+                  widget.currentLocation.toLatLng(),
+                  10,
+                ),
+              );
             }
           },
           polylines: _polylines,
@@ -108,21 +125,23 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: const Color(0xffD5D7DA)
-                ),
+                border: Border.all(color: const Color(0xffD5D7DA)),
                 boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
               ),
               child: Row(
                 children: [
-                 Text(widget.hintText??"Search for location",style:widget.textStyle?? TextStyle(
-                    color: Color(0xff252B37),
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                  ),),
+                  Text(
+                    widget.hintText ?? "Search for location",
+                    style:
+                        widget.textStyle ??
+                        TextStyle(
+                          color: Color(0xff252B37),
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        ),
+                  ),
                   Spacer(),
-                if(widget.suffixSearchIcon!=null)
-                widget.suffixSearchIcon!
+                  if (widget.suffixSearchIcon != null) widget.suffixSearchIcon!,
                 ],
               ),
             ),
@@ -146,14 +165,17 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
     ref.read(searchControllerProvider(widget.apiKey).notifier).reset();
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) =>  SearchRoutesScreen(apiKey:widget.apiKey,)),
+      MaterialPageRoute(
+        builder: (_) => SearchRoutesScreen(apiKey: widget.apiKey),
+      ),
     );
 
     if (result is Map) {
-      final origin = result['origin'] as LatLng? ?? widget.currentLocation.toLatLng();
+      final origin =
+          result['origin'] as LatLng? ?? widget.currentLocation.toLatLng();
       final destination = result['destination'] as LatLng;
 
-      await _drawRoute(widget.apiKey,origin, destination);
+      await _drawRoute(widget.apiKey, origin, destination);
     }
   }
 
@@ -164,7 +186,7 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
       context,
       MaterialPageRoute(
         builder: (_) => SearchOnePlaceScreen(
-       hintText: widget.hintText,
+          hintText: widget.hintText,
           hintStyle: widget.hintStyle,
           prefixSearchIcon: widget.prefixSearchIcon,
           suffixSearchIcons: widget.suffixSearchIcon,
@@ -197,10 +219,14 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
     );
   }
 
-  Future<void> _drawRoute(String apiKey,LatLng origin, LatLng destination) async {
+  Future<void> _drawRoute(
+    String apiKey,
+    LatLng origin,
+    LatLng destination,
+  ) async {
     final result = await ref
         .read(searchControllerProvider(widget.apiKey).notifier)
-        .drawRoutePolyline(apiKey,origin, destination);
+        .drawRoutePolyline(apiKey, origin, destination);
     if (result.isNotEmpty) {
       final points = result
           .map((p) => LatLng(p.latitude, p.longitude))
@@ -237,5 +263,11 @@ class _MapScreenState extends ConsumerState<SearchOnMap> {
       iconWidth: widget.iconWidth,
     );
     return {originMarker, destinationMarker};
+  }
+
+  Future<void> _loadMapStyle() async {
+    mapStyle = await DefaultAssetBundle.of(
+      context,
+    ).loadString('packages/live_map_tracking/assets/map_style.json');
   }
 }

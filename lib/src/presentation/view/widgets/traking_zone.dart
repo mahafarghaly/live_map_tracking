@@ -42,6 +42,7 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
   StreamSubscription<Position>? _locationSubscription;
   String _mapStyle = '';
   bool _markersInitialized = false;
+  bool _isNearDestination = false;
 
   @override
   void initState() {
@@ -141,6 +142,28 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
   }
 
   Future<void> _getPolyline(LatLng source) async {
+    final distance = Geolocator.distanceBetween(
+      source.latitude,
+      source.longitude,
+      widget.destinationLocation.lat,
+      widget.destinationLocation.lng,
+    );
+
+    // لو قرب
+    if (distance <= 10) {
+      if (!_isNearDestination) {
+        _isNearDestination = true;
+        _polylineCoordinates.clear();
+        setState(() {});
+      }
+      return;
+    }
+
+    // لو بعد تاني
+    if (_isNearDestination && distance > 10) {
+      _isNearDestination = false;
+    }
+
     final polylinePoints = PolylinePoints(apiKey: widget.apiKey);
 
     final result = await polylinePoints.getRouteBetweenCoordinates(

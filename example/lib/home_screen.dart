@@ -109,8 +109,8 @@ class HomeScreen extends StatelessWidget {
                       body: TrackingZone(
                         apiKey: apiKey,
                         destinationLocation: GeoPoint(
-                          lat: 37.411,
-                          lng: -122.071,
+                          lat: 37.423453,
+                          lng: -122.086477,
                         ),
                         sourceIcon:
                             "packages/live_map_tracking/assets/images/source_marker.png",
@@ -119,7 +119,7 @@ class HomeScreen extends StatelessWidget {
                         locationStream: Geolocator.getPositionStream(
                           locationSettings: const LocationSettings(
                             accuracy: LocationAccuracy.high,
-                            distanceFilter: 100,
+                            distanceFilter: 10,
                           ),
                         ),
                         checkPermission: () async {

@@ -16,7 +16,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  geolocator: ^14.0.2
   live_map_tracking:
     # When depending on this package from a real application you should use:
     #   live_map_tracking: ^x.y.z

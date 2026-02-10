@@ -14,7 +14,7 @@ class LiveMapTracking {
   static Future<Marker> displayMarker({
     required String markerId,
     required GeoPoint position,
-     String? assetIcon,
+    String? assetIcon,
     VoidCallback? onTap,
     double? iconWidth,
     double? iconHeight,

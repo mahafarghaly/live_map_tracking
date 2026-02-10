@@ -1,0 +1,203 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:live_map_tracking/live_map_tracking.dart';
+import 'package:live_map_tracking/src/core/utils/latlng_tween.dart';
+
+typedef LocationStream = Stream<Position>;
+typedef PermissionChecker = Future<void> Function();
+
+class TrackingZone extends ConsumerStatefulWidget {
+  const TrackingZone({
+    super.key,
+    required this.apiKey,
+    required this.destinationLocation,
+    required this.sourceIcon,
+    required this.destinationIcon,
+    required this.locationStream,
+    required this.checkPermission,
+  });
+  final String apiKey;
+  final GeoPoint destinationLocation;
+  final String sourceIcon;
+  final String destinationIcon;
+  final LocationStream locationStream;
+  final PermissionChecker checkPermission;
+
+  @override
+  ConsumerState<TrackingZone> createState() => _TrackingZoneState();
+}
+
+class _TrackingZoneState extends ConsumerState<TrackingZone>
+    with SingleTickerProviderStateMixin {
+  final Completer<GoogleMapController> _controller = Completer();
+  Set<Marker> _markers = {};
+  List<LatLng> _polylineCoordinates = [];
+  LatLng? _currentLocation;
+  LatLng? _previousLocation;
+  late AnimationController _markerAnimationController;
+  StreamSubscription<Position>? _locationSubscription;
+  String _mapStyle = '';
+  bool _markersInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initAnimation();
+    _loadMapStyle();
+    _initLocation();
+  }
+
+  void _initAnimation() {
+    _markerAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+  }
+
+  void _initLocation() {
+    widget.checkPermission().then((_) {
+      _locationSubscription = widget.locationStream.listen(_onLocationUpdate);
+    });
+  }
+
+  void _onLocationUpdate(Position position) async {
+    final newLocation = LatLng(position.latitude, position.longitude);
+
+    if (_currentLocation == null) {
+      _currentLocation = newLocation;
+      _previousLocation = newLocation;
+      await _setInitialMarkers();
+      _getPolyline(newLocation);
+      setState(() {});
+      return;
+    }
+
+    _previousLocation = _currentLocation;
+    _currentLocation = newLocation;
+
+    _animateMarker();
+    _getPolyline(newLocation);
+  }
+
+  Future<void> _setInitialMarkers() async {
+    if (_markersInitialized) return;
+
+    final sourceMarker = await LiveMapTracking.displayMarker(
+      markerId: 'source',
+      position: GeoPoint(
+        lat: _currentLocation!.latitude,
+        lng: _currentLocation!.longitude,
+      ),
+      assetIcon: widget.sourceIcon,
+      iconWidth: 24,
+      iconHeight: 24,
+    );
+
+    final destinationMarker = await LiveMapTracking.displayMarker(
+      markerId: 'destination',
+      position: GeoPoint(
+        lat: widget.destinationLocation.lat,
+        lng: widget.destinationLocation.lng,
+      ),
+      assetIcon: widget.destinationIcon,
+      iconWidth: 80,
+      iconHeight: 80,
+    );
+
+    _markers = {sourceMarker, destinationMarker};
+    _markersInitialized = true;
+  }
+
+  void _animateMarker() {
+    late Animation<LatLng> animation;
+
+    animation = LatLngTween(
+      begin: _previousLocation!,
+      end: _currentLocation!,
+    ).animate(_markerAnimationController);
+
+    animation.addListener(() {
+      _updateSourceMarker(animation.value);
+    });
+
+    _markerAnimationController.forward(from: 0);
+  }
+
+  void _updateSourceMarker(LatLng position) {
+    final sourceMarker = _markers.firstWhere(
+      (m) => m.markerId.value == 'source',
+    );
+
+    setState(() {
+      _markers = {
+        sourceMarker.copyWith(positionParam: position),
+        ..._markers.where((m) => m.markerId.value != 'source'),
+      };
+    });
+  }
+
+  Future<void> _getPolyline(LatLng source) async {
+    final polylinePoints = PolylinePoints(apiKey: widget.apiKey);
+
+    final result = await polylinePoints.getRouteBetweenCoordinates(
+      request: PolylineRequest(
+        origin: PointLatLng(source.latitude, source.longitude),
+        destination: PointLatLng(
+          widget.destinationLocation.lat,
+          widget.destinationLocation.lng,
+        ),
+        mode: TravelMode.driving,
+      ),
+    );
+
+    if (result.points.isNotEmpty) {
+      _polylineCoordinates = result.points
+          .map((e) => LatLng(e.latitude, e.longitude))
+          .toList();
+
+      setState(() {});
+    }
+  }
+
+  Future<void> _loadMapStyle() async {
+    _mapStyle = await DefaultAssetBundle.of(
+      context,
+    ).loadString('packages/live_map_tracking/assets/map_style.json');
+  }
+
+  @override
+  void dispose() {
+    _locationSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_currentLocation == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return GoogleMap(
+      initialCameraPosition: CameraPosition(
+        target: _currentLocation!,
+        zoom: 13.5,
+      ),
+      markers: _markers,
+      polylines: {
+        Polyline(
+          polylineId: const PolylineId('route'),
+          points: _polylineCoordinates,
+          width: 4,
+          color: const Color(0xff252B37),
+        ),
+      },
+      onMapCreated: (controller) {
+        controller.setMapStyle(_mapStyle);
+        _controller.complete(controller);
+      },
+    );
+  }
+}

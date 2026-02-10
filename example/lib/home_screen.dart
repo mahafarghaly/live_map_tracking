@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
+import 'package:live_map_tracking/src/presentation/view/widgets/traking_zone.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -98,6 +100,47 @@ class HomeScreen extends StatelessWidget {
                 },
                 child: Text("Search on map"),
                 color: Colors.yellow,
+              ),
+              SizedBox(height: 20),
+              MaterialButton(
+                onPressed: () {
+                  navigationTo(
+                    context,
+                    Scaffold(
+                      body: TrackingZone(
+                        apiKey: apiKey,
+                        destinationLocation: GeoPoint(
+                          lat: 37.411,
+                          lng: -122.071,
+                        ),
+                        sourceIcon:
+                            "packages/live_map_tracking/assets/images/source_marker.png",
+                        destinationIcon:
+                            "packages/live_map_tracking/assets/images/destination_marker.png",
+                        locationStream: Geolocator.getPositionStream(
+                          locationSettings: const LocationSettings(
+                            accuracy: LocationAccuracy.high,
+                            distanceFilter: 100,
+                          ),
+                        ),
+                        checkPermission: () async {
+                          LocationPermission permission =
+                              await Geolocator.checkPermission();
+                          if (permission == LocationPermission.denied) {
+                            await Geolocator.requestPermission();
+                          }
+                          if (permission == LocationPermission.deniedForever) {
+                            throw Exception(
+                              'Location permission permanently denied',
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  );
+                },
+                color: Colors.yellow,
+                child: Text("Tracking Zone"),
               ),
             ],
           ),

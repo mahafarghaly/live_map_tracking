@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
-import 'package:live_map_tracking/src/presentation/view/widgets/traking_zone.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

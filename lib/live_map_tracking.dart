@@ -9,6 +9,7 @@ export 'src/presentation/controllers/marker_controller.dart';
 export 'src/presentation/view/widgets/custom_info_window.dart';
 export 'src/presentation/view/widgets/live_tracking.dart';
 export 'src/presentation/view/screens/search_on_map.dart';
+export 'src/presentation/view/widgets/traking_zone.dart';
 
 class LiveMapTracking {
   static Future<Marker> displayMarker({

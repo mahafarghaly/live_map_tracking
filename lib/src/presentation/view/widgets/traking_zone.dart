@@ -73,6 +73,7 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
       _previousLocation = newLocation;
       await _setInitialMarkers();
       _getPolyline(newLocation);
+      _moveCamera(newLocation);
       setState(() {});
       return;
     }
@@ -82,6 +83,7 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
 
     _animateMarker();
     _getPolyline(newLocation);
+    _moveCamera(newLocation);
   }
 
   Future<void> _setInitialMarkers() async {
@@ -190,6 +192,18 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
     _mapStyle = await DefaultAssetBundle.of(
       context,
     ).loadString('packages/live_map_tracking/assets/map_style.json');
+  }
+
+  Future<void> _moveCamera(LatLng target) async {
+    if (!_controller.isCompleted) return;
+
+    final controller = await _controller.future;
+
+    controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: target, zoom: 13.5),
+      ),
+    );
   }
 
   @override

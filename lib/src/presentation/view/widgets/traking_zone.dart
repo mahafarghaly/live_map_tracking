@@ -96,8 +96,8 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
         lng: _currentLocation!.longitude,
       ),
       assetIcon: widget.sourceIcon,
-      iconWidth: 24,
-      iconHeight: 24,
+      iconWidth: 80,
+      iconHeight: 80,
     );
 
     final destinationMarker = await LiveMapTracking.displayMarker(
@@ -151,7 +151,6 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
       widget.destinationLocation.lng,
     );
 
-    // لو قرب
     if (distance <= 10) {
       if (!_isNearDestination) {
         _isNearDestination = true;
@@ -161,7 +160,6 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
       return;
     }
 
-    // لو بعد تاني
     if (_isNearDestination && distance > 10) {
       _isNearDestination = false;
     }

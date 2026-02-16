@@ -96,8 +96,8 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
         lng: _currentLocation!.longitude,
       ),
       assetIcon: widget.sourceIcon,
-      iconWidth: 80,
-      iconHeight: 80,
+      iconWidth: 60,
+      iconHeight: 60,
     );
 
     final destinationMarker = await LiveMapTracking.displayMarker(

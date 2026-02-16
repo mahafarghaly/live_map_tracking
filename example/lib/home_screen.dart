@@ -113,9 +113,9 @@ class HomeScreen extends StatelessWidget {
                           lng: -122.086477,
                         ),
                         sourceIcon:
-                            "packages/live_map_tracking/assets/images/source_marker.png",
+                            "packages/live_map_tracking/assets/images/you_pin.png",
                         destinationIcon:
-                            "packages/live_map_tracking/assets/images/destination_marker.png",
+                            "packages/live_map_tracking/assets/images/drop_off.png",
                         locationStream: Geolocator.getPositionStream(
                           locationSettings: const LocationSettings(
                             accuracy: LocationAccuracy.high,

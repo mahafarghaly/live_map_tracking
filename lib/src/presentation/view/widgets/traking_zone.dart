@@ -43,6 +43,7 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
   String _mapStyle = '';
   bool _markersInitialized = false;
   bool _isNearDestination = false;
+  double _currentZoom = 13.5;
 
   @override
   void initState() {
@@ -199,7 +200,7 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
 
     controller.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: target, zoom: 13.5),
+        CameraPosition(target: target, zoom: _currentZoom),
       ),
     );
   }
@@ -221,6 +222,11 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
         zoom: 13.5,
       ),
       markers: _markers,
+      onCameraIdle: () async {
+        final controller = await _controller.future;
+        _currentZoom = await controller.getZoomLevel();
+      },
+
       polylines: {
         Polyline(
           polylineId: const PolylineId('route'),

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:live_map_tracking/live_map_tracking.dart';
+import 'package:live_map_tracking/src/core/utils/custom_dot_loader.dart';
 import 'package:live_map_tracking/src/core/utils/latlng_tween.dart';
 
 typedef LocationStream = Stream<Position>;
@@ -214,7 +215,7 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
   @override
   Widget build(BuildContext context) {
     if (_currentLocation == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CustomDotProgressIndicator());
     }
     return GoogleMap(
       initialCameraPosition: CameraPosition(

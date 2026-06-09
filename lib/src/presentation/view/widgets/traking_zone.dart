@@ -70,6 +70,15 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
     try {
       await widget.checkPermission();
       debugPrint('Permission granted');
+      final currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      debugPrint(
+        'FIRST LOCATION => ${currentPosition.latitude}, ${currentPosition.longitude}',
+      );
+      _onLocationUpdate(currentPosition);
+
+      // Then listen for updates
       _locationSubscription = widget.locationStream.listen(
         (position) {
           debugPrint(
@@ -81,8 +90,9 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
           debugPrint('Location Stream Error: $e');
         },
       );
-    } catch (e) {
+    } catch (e, s) {
       debugPrint('Permission Error: $e');
+      debugPrint('$s');
     }
   }
 

@@ -71,7 +71,12 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
       await widget.checkPermission();
       debugPrint('Permission granted');
       _locationSubscription = widget.locationStream.listen(
-        _onLocationUpdate,
+        (position) {
+          debugPrint(
+            'TRACKING STREAM => ${position.latitude}, ${position.longitude}',
+          );
+          _onLocationUpdate(position);
+        },
         onError: (e) {
           debugPrint('Location Stream Error: $e');
         },
@@ -82,24 +87,32 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
   }
 
   void _onLocationUpdate(Position position) async {
-    final newLocation = LatLng(position.latitude, position.longitude);
+    try {
+      debugPrint('LOCATION RECEIVED');
 
-    if (_currentLocation == null) {
+      final newLocation = LatLng(position.latitude, position.longitude);
+
+      if (_currentLocation == null) {
+        _currentLocation = newLocation;
+        _previousLocation = newLocation;
+
+        await _setInitialMarkers();
+
+        debugPrint('MARKERS CREATED');
+
+        setState(() {});
+        return;
+      }
+      _previousLocation = _currentLocation;
       _currentLocation = newLocation;
-      _previousLocation = newLocation;
-      await _setInitialMarkers();
+
+      _animateMarker();
       _getPolyline(newLocation);
       _moveCamera(newLocation);
-      setState(() {});
-      return;
+    } catch (e, s) {
+      debugPrint('LOCATION UPDATE ERROR => $e');
+      debugPrint('$s');
     }
-
-    _previousLocation = _currentLocation;
-    _currentLocation = newLocation;
-
-    _animateMarker();
-    _getPolyline(newLocation);
-    _moveCamera(newLocation);
   }
 
   Future<void> _setInitialMarkers() async {

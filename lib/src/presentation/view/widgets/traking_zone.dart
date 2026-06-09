@@ -49,9 +49,14 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
   @override
   void initState() {
     super.initState();
-    _initAnimation();
-    _loadMapStyle();
     _initLocation();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadMapStyle();
+    _initAnimation();
   }
 
   void _initAnimation() {
@@ -61,10 +66,19 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
     );
   }
 
-  void _initLocation() {
-    widget.checkPermission().then((_) {
-      _locationSubscription = widget.locationStream.listen(_onLocationUpdate);
-    });
+  void _initLocation() async {
+    try {
+      await widget.checkPermission();
+      debugPrint('Permission granted');
+      _locationSubscription = widget.locationStream.listen(
+        _onLocationUpdate,
+        onError: (e) {
+          debugPrint('Location Stream Error: $e');
+        },
+      );
+    } catch (e) {
+      debugPrint('Permission Error: $e');
+    }
   }
 
   void _onLocationUpdate(Position position) async {
@@ -189,9 +203,13 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
   }
 
   Future<void> _loadMapStyle() async {
-    _mapStyle = await DefaultAssetBundle.of(
-      context,
-    ).loadString('packages/live_map_tracking/assets/map_style.json');
+    try {
+      _mapStyle = await DefaultAssetBundle.of(
+        context,
+      ).loadString('packages/live_map_tracking/assets/map_style.json');
+    } catch (e) {
+      debugPrint('Map Style Error: $e');
+    }
   }
 
   Future<void> _moveCamera(LatLng target) async {
@@ -237,6 +255,7 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
         ),
       },
       onMapCreated: (controller) {
+        debugPrint('MAP CREATED');
         controller.setMapStyle(_mapStyle);
         _controller.complete(controller);
       },

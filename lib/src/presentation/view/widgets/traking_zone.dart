@@ -49,14 +49,9 @@ class _TrackingZoneState extends ConsumerState<TrackingZone>
   @override
   void initState() {
     super.initState();
-    _initLocation();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
     _loadMapStyle();
     _initAnimation();
+    _initLocation();
   }
 
   void _initAnimation() {
